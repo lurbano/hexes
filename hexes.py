@@ -1,5 +1,4 @@
 import numpy as np
-from svgInator_3 import *
 import matplotlib.pyplot as plt
 import matplotlib.image as pltimg
 
@@ -27,8 +26,8 @@ class hex:
         ya = []
         for i in range(n_sides):
             angle = self.rot + i * pi / 3
-            xa.append(self.x + self.r * cos(angle))
-            ya.append(self.y + self.r * sin(angle))
+            xa.append(self.x + self.r * np.cos(angle))
+            ya.append(self.y + self.r * np.sin(angle))
         #close curve
         angle = rot
         xa.append(xa[0])
@@ -63,11 +62,11 @@ class hexGrid:
             d = self.hexSide * i
             for j in range(self.n_sides):
                 angle = self.sideAngle * j
-                xc = d * cos(angle)
-                yc = d * sin(angle)
+                xc = d * np.cos(angle)
+                yc = d * np.sin(angle)
 
-                xn = d * cos(angle + self.sideAngle)
-                yn = d * sin(angle + self.sideAngle)
+                xn = d * np.cos(angle + self.sideAngle)
+                yn = d * np.sin(angle + self.sideAngle)
 
                 x.append(xc)
                 y.append(yc)
@@ -100,10 +99,10 @@ class hexGrid:
 
 class boundingBox:
     def __init__(self, xmin, xmax, ymin, ymax):
-        self.xmin = int(floor(xmin))
-        self.xmax = int(ceil(xmax))
-        self.ymin = int(floor(ymin))
-        self.ymax = int(ceil(ymax))
+        self.xmin = int(np.floor(xmin))
+        self.xmax = int(np.ceil(xmax))
+        self.ymin = int(np.floor(ymin))
+        self.ymax = int(np.ceil(ymax))
 
     def sliceImg(self, inArray):
         return inArray[self.ymin:self.ymax,self.xmin:self.xmax, :]
@@ -120,7 +119,7 @@ r = 10          #distance to node
 rot = pi/6      #pi/6 = point up
 
 
-img = pltimg.imread('lofi_cali_girl.png')
+img = pltimg.imread('c-14-final.png')
 print(f'image shape: {img.shape}')
 cy = img.shape[0]/2
 cx = img.shape[1]/2
