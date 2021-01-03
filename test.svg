@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   id="svg885"
+   height="100"
+   width="88"
+   version="1.1">
+  <metadata
+     id="metadata891">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs889" />
+  <g
+     id="g895">
+    <image
+       xlink:href="output/test01.png"
+       id="image881"
+       transform="'''rotate(45)'''"
+       height="100"
+       width="88"
+       y="0"
+       x="0" />
+    <polyline
+       points="87.30127018922194,75.0,44.0,100.0,0.6987298107780759,75.00000000000001,0.6987298107780617,25.000000000000014,43.99999999999999,0.0,87.30127018922194,25.000000000000018,87.30127018922194,75.0,"
+       style="stroke:#000;stroke-width:1pt;fill:none;"
+       id="polyline883" />
+  </g>
+</svg>

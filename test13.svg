@@ -1,0 +1,6 @@
+ <svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="88" height="100">
+  <image x="0" y="0" width="88" height="100" transform="'''rotate(45)'''"
+     xlink:href="test13.svg"/><polyline points="87.30127018922194,75.0,44.0,100.0,0.6987298107780759,75.00000000000001,0.6987298107780617,25.000000000000014,43.99999999999999,0.0,87.30127018922194,25.000000000000018,87.30127018922194,75.0," style="stroke:#000;stroke-width:1pt;fill:none;"/>
+</svg> 
