@@ -14,8 +14,8 @@ import os
 
 ###### FROM svgInator
 defaultPolylineStyle = {
-    "stroke": "#000",
-    "stroke-width": "1pt",
+    "stroke": "#f00",
+    "stroke-width": "hairline",
     "fill": "none"
     }
 
@@ -38,14 +38,6 @@ def textifyStyle(style):
     return txt
 # END svgInator
 
-# svgHead = """<svg version="1.1"
-#      baseProfile="full"
-#      width="{width}" height="{height}"
-#      xmlns="http://www.w3.org/2000/svg"> """
-#
-# svgTail = '</svg>'
-#
-# svgImage = '<image href="{filename}" x="{xp}" y="{yp}" height="{h}" width="{w}"/>'
 
 svgText = """ <svg version="1.1"
      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -53,6 +45,37 @@ svgText = """ <svg version="1.1"
   <image x="0" y="0" width="{w}" height="{h}" transform="'''rotate(45)'''"
      xlink:href="{filename}"/>{hexagon}
 </svg> """
+
+class svgWriter:
+    def __init__(self, width, height):
+        svgHead = """ <svg version="1.1"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             width="{w}" height="{h}"> \n """
+        self.txt = svgHead.format(w=width, h=height)
+        self.ng = 0
+
+    def addHexGroup(self, filename, x, y, w, h, hexagonTxt):
+        self.ng += 1
+        groupId = 'g'+str(self.ng).zfill(2)
+
+        image = """ <image x="0" y="0" width="{w}" height="{h}" transform="'''rotate(45)'''"
+           xlink:href="{filename}"/> """
+        image = image.format(filename=filename, w=w, h=h, x=x, y=y)
+
+        hexagon = hexagonTxt
+
+        base = f'<g id="{groupId}" transform="translate({x} {y})">{image}{hexagon} </g> \n'
+        self.txt += base
+
+    def write(self, outFile):
+        #close tag
+        self.txt += '</svg>'
+        with open(outFile, "w") as svgFile:
+            svgFile.write(self.txt)
+        print(f"written to {outFile}")
+
+
+
 
 class hex:
     def __init__(self, radius=10, pos=(0,0)):
@@ -100,25 +123,6 @@ class hex:
         return svgTxt
 
 
-    # class svgPolyline(svgShape):
-    # def __init__(self, pos, style={}, units="mm"):
-    #     self.style = mergeStyles(style, defaultPolylineStyle)
-    #     self.pos = pos
-    #     self.units = units
-    #     self.ptxt = ""
-    #     for i in pos:
-    #         if (self.units == "mm"):
-    #             i = i * mm_to_px(1)
-    #         self.ptxt += '{x},{y},'.format(x=i.x, y=i.y)
-    #     self.ptxt = self.ptxt[:-1]
-    #     self.units = units
-    #
-    #
-    # def getText(self):
-    #     styleTxt = textifyStyle(self.style)
-    #     self.txt = '<polyline points="{pts}" style="{style}"/>'.format(
-    #         pts=self.ptxt, style=styleTxt)
-    #     return self.txt
 
     def patch(self, inArray): #WIP
         data = self.getNumpyArrayPts()
@@ -221,15 +225,16 @@ cy = img.shape[0]/2
 cx = img.shape[1]/2
 print(cx, cy)
 
-grid = hexGrid(levels=3, pos=(cx, cy), gridSpacing=50, hexScale=1)
+grid = hexGrid(levels=3, pos=(cx, cy), gridSpacing=50, hexScale=.9)
 
-#img = img[50:100, 50:200, :]
 
-#plt.imshow(img)
+
 
 outdir = "output"
 
 os.makedirs("output", exist_ok=True)
+
+svgOut = svgWriter(width=cx, height=cy)
 
 for i in range(len(grid.hexes)):
     h = grid.hexes[i]
@@ -248,59 +253,25 @@ for i in range(len(grid.hexes)):
     pltimg.imsave(outfile, tile)
 
     (tx, ty, tc) = tile.shape
+
+    xbig = h.x - cx/2
+    ybig = h.y - cy/2
+
     h.x = int(ty/2)
     h.y = int(tx/2)
-    outSvg = outfile.replace(".png", ".svg")
+
+
     imgFile = outfile.replace(outdir+'/', "")
+
+    outSvg = outfile.replace(".png", ".svg")
     with open(outSvg, "w") as svgFile:
         svgFile.write(svgText.format(filename=imgFile, w=ty, h=tx, hexagon=h.getSvg()))
 
+    svgOut.addHexGroup(imgFile, xbig, ybig, ty, tx, h.getSvg())
 
 
-# tile = grid.boxes[-1].sliceImg(img)
-# (tx, ty, tc) = tile.shape
-# pltimg.imsave("test.png", tile)
-#
-# basicHex = grid.hexes[-1]
-# basicHex.x = int(ty/2)
-# basicHex.y = int(tx/2)
-#
-# # with open("hex.svg", "w") as svgFile:
-# #     svgFile.write(svgHead.format(width=ty, height=tx))
-# #     svgFile.write(svgImage.format(filename="test.png", xp=0, yp=0, w=ty, h=tx))
-# #     svgFile.write(basicHex.getSvg())
-# #     svgFile.write(svgTail)
-#
-# with open("hex2.svg", "w") as testfile:
-#     testfile.write(svgtest.format(filename="test.png", w=ty, h=tx, hexagon=basicHex.getSvg()))
-#
-#
-# print(f'basicHex: {basicHex.getSvg()}')
-#
-# for b in grid.boxes:
-#     #print(b.sliceImg(img))
-#     plt.imshow(b.sliceImg(img), extent=b.sliceExtent())
-#     pltimg.imsave("test.png", b.sliceImg(img))
-#
-#
-# for h in grid.hexes:
-#     #h.patch(img)
-#     # a = h.getNumpyArrayPts()
-#     # # print(f"a: {a}")
-#     # im = plt.imshow(img)
-#     # patch = patches.Polygon(a, closed=True)
-#     # im.set_clip_path(patch)
-#
-#     xp, yp = h.getNodes()
-#     # print(f"xp: {xp}")
-#     # print(f"yp: {yp}")
-#     plt.plot(xp, yp)
-#
-
-
-# for h in grid.hexes:
-#     xp, yp = h.getNodes()
-#     plt.plot(xp, yp)
+bigSvgFile = f"{outdir}/bigHex.svg"
+svgOut.write(bigSvgFile)
 
 plt.axis("off")
 plt.show()
