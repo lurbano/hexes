@@ -1,6 +1,6 @@
  <svg version="1.1"
-     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="79" height="90">
-  <image x="0" y="0" width="79" height="90" transform="'''rotate(45)'''"
-     xlink:href="test14.png"/><polyline points="77.97114317029974,67.5,39.0,90.0,0.02885682970026693,67.50000000000001,0.028856829700252717,22.500000000000014,38.99999999999999,0.0,77.97114317029974,22.500000000000014,77.97114317029974,67.5," style="stroke:#f00;stroke-width:hairline;fill:none;"/>
-</svg> 
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             width="79" height="90"> 
+ <g id="g01" transform="translate(0 0)"> <image x="0" y="0" width="79" height="90" transform="'''rotate(45)'''"
+           xlink:href="test14.png"/> <polyline points="77.97114317029974,67.5,39.0,90.0,0.02885682970026693,67.50000000000001,0.028856829700252717,22.500000000000014,38.99999999999999,0.0,77.97114317029974,22.500000000000014,77.97114317029974,67.5," style="stroke:#f00;stroke-width:hairline;fill:none;"/> </g> 
+</svg>

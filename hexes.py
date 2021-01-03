@@ -39,13 +39,6 @@ def textifyStyle(style):
 # END svgInator
 
 
-svgText = """ <svg version="1.1"
-     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="{w}" height="{h}">
-  <image x="0" y="0" width="{w}" height="{h}" transform="'''rotate(45)'''"
-     xlink:href="{filename}"/>{hexagon}
-</svg> """
-
 class svgWriter:
     def __init__(self, width, height):
         svgHead = """ <svg version="1.1"
@@ -54,7 +47,7 @@ class svgWriter:
         self.txt = svgHead.format(w=width, h=height)
         self.ng = 0
 
-    def addHexGroup(self, filename, x, y, w, h, hexagonTxt):
+    def addHexGroup(self, filename, x, y, w, h, hexagon):
         self.ng += 1
         groupId = 'g'+str(self.ng).zfill(2)
 
@@ -62,7 +55,7 @@ class svgWriter:
            xlink:href="{filename}"/> """
         image = image.format(filename=filename, w=w, h=h, x=x, y=y)
 
-        hexagon = hexagonTxt
+        #hexagon = hexagonTxt
 
         base = f'<g id="{groupId}" transform="translate({x} {y})">{image}{hexagon} </g> \n'
         self.txt += base
@@ -74,9 +67,6 @@ class svgWriter:
             svgFile.write(self.txt)
         print(f"written to {outFile}")
 
-
-
-
 class hex:
     def __init__(self, radius=10, pos=(0,0)):
         self.n_sides = 6
@@ -87,14 +77,12 @@ class hex:
 
         self.width = 2*self.r
         self.height = self.r * 3**0.5
-        #self.side = self.r
-
 
     def getNodes(self):
         xa = []
         ya = []
         for i in range(n_sides):
-            angle = self.rot + i * pi / 3
+            angle = self.rot + i * np.pi / 3
             xa.append(self.x + self.r * np.cos(angle))
             ya.append(self.y + self.r * np.sin(angle))
         #close curve
@@ -123,7 +111,6 @@ class hex:
         return svgTxt
 
 
-
     def patch(self, inArray): #WIP
         data = self.getNumpyArrayPts()
 
@@ -150,7 +137,6 @@ class hexGrid:
         self.hexes = []
         self.boxes = []
         self.getHexes()
-
 
     def getHexes(self):
         x = []
@@ -212,11 +198,9 @@ class boundingBox:
 
 
 
-pi = np.pi
-
 n_sides = 6     #hexagons
 r = 10          #distance to node
-rot = pi/6      #pi/6 = point up
+rot = np.pi/6      #pi/6 = point up
 
 
 img = pltimg.imread('lofi_cali_girl_full.jpg')
@@ -264,8 +248,12 @@ for i in range(len(grid.hexes)):
     imgFile = outfile.replace(outdir+'/', "")
 
     outSvg = outfile.replace(".png", ".svg")
-    with open(outSvg, "w") as svgFile:
-        svgFile.write(svgText.format(filename=imgFile, w=ty, h=tx, hexagon=h.getSvg()))
+    # with open(outSvg, "w") as svgFile:
+    #     svgFile.write(svgText.format(filename=imgFile, w=ty, h=tx, hexagon=h.getSvg()))
+
+    smallSvg = svgWriter(ty, tx)
+    smallSvg.addHexGroup(filename=imgFile, x=0, y=0, w=ty, h=tx, hexagon=h.getSvg())
+    smallSvg.write(outSvg)
 
     svgOut.addHexGroup(imgFile, xbig, ybig, ty, tx, h.getSvg())
 
@@ -275,6 +263,3 @@ svgOut.write(bigSvgFile)
 
 plt.axis("off")
 plt.show()
-
-plt.savefig("test.svg")
-# svg.close()
