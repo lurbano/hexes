@@ -60,6 +60,9 @@ class svgWriter:
         base = f'<g id="{groupId}" transform="translate({x} {y})">{image}{hexagon} </g> \n'
         self.txt += base
 
+    def addSvgTxt(self, txt):
+        self.txt += txt
+
     def write(self, outFile):
         #close tag
         self.txt += '</svg>'
@@ -81,12 +84,12 @@ class hex:
     def getNodes(self):
         xa = []
         ya = []
-        for i in range(n_sides):
+        for i in range(self.n_sides):
             angle = self.rot + i * np.pi / 3
             xa.append(self.x + self.r * np.cos(angle))
             ya.append(self.y + self.r * np.sin(angle))
         #close curve
-        angle = rot
+        angle = self.rot
         xa.append(xa[0])
         ya.append(ya[0])
         return xa, ya
@@ -166,7 +169,15 @@ class hexGrid:
                     self.hexes.append( hex(pos=(xm, ym), radius=self.hexR))
 
         self.translateHexes(self.xc, self.yc)
-        return x, y
+        return x, y     # x, y, are cordinates of the centers of the hexes
+
+    def getHexesSvg(self, style={}):
+        if (self.hexes == 0):
+            self.getHexes()
+        txt = ''
+        for h in self.hexes:
+            txt += h.getSvg(style=style)
+        return txt
 
     def translateHexes(self, x, y):
         for h in self.hexes:
@@ -198,22 +209,32 @@ class boundingBox:
         return (self.xmin-0.5, self.xmax-0.5, self.ymax-0.5, self.ymin-0.5)
 
 
+imageFile = 'lofi_cali_girl_full.jpg'
+levels = 3          #number of concentric circles
+gridSpacing = 50    #size of hexes in grid
+hexScale = 0.9      #scale factor to make hexes
+                    #  smaller than the grid size
 
-n_sides = 6     #hexagons
-r = 10          #distance to node
-rot = np.pi/6      #pi/6 = point up
+#n_sides = 6     #hexagons
+#r = 10          #distance to node
+#rot = np.pi/6      #pi/6 = point up
 
 
-img = pltimg.imread('lofi_cali_girl_full.jpg')
+img = pltimg.imread(imageFile)
 print(f'image shape: {img.shape}')
 cy = img.shape[0]/2
 cx = img.shape[1]/2
 print(cx, cy)
 
-grid = hexGrid(levels=3, pos=(cx, cy), gridSpacing=50, hexScale=.9)
+grid = hexGrid(levels=levels, pos=(cx, cy), gridSpacing=gridSpacing, hexScale=hexScale)
 
-
-
+smallGrid = hexGrid(levels=levels, pos=(cx, cy), gridSpacing=gridSpacing, hexScale=hexScale)
+smallHexGroup = '<g id="smallHexes">'
+for h in smallGrid.hexes:
+    h.x -= (cx-h.height)/2
+    h.y -= (cy-h.width)/2
+    smallHexGroup += h.getSvg(style={"stroke":"#00f"})
+smallHexGroup += '</g>'
 
 outdir = "output"
 
@@ -230,8 +251,6 @@ for i in range(len(grid.hexes)):
     plt.imshow(tile, extent=b.sliceExtent())
 
     xp, yp = h.getNodes()
-    # print(f"xp: {xp}")
-    # print(f"yp: {yp}")
     plt.plot(xp, yp)
 
     outfile = f'{outdir}/test{str(i).zfill(2)}.png'
@@ -258,6 +277,23 @@ for i in range(len(grid.hexes)):
 
     svgOut.addHexGroup(imgFile, xbig, ybig, ty, tx, h.getSvg())
 
+
+fullGrid = hexGrid(levels=levels, pos=(cx, cy), gridSpacing=gridSpacing, hexScale=1.0)
+# fullSvgs = fullGrid.getHexesSvg(style={"stroke":"#00f"})
+# fullHexGroup = f'<g id="fullGrid">{fullSvgs}</g>'
+
+fullHexGroup = '<g id="fullHexes">'
+for h in fullGrid.hexes:
+    h.x -= (cx-h.height*hexScale)/2
+    h.y -= (cy-h.width*hexScale)/2
+    fullHexGroup += h.getSvg(style={"stroke":"#00f"})
+fullHexGroup += '</g>'
+
+
+
+
+svgOut.addSvgTxt(fullHexGroup)
+svgOut.addSvgTxt(smallHexGroup)
 
 bigSvgFile = f"{outdir}/bigHex.svg"
 svgOut.write(bigSvgFile)
