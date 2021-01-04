@@ -1,0 +1,6 @@
+ <svg version="1.1"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             width="824" height="950"> 
+ <g id="g01" transform="translate(0 0)"> <image x="0" y="0" width="824" height="950" transform="'''rotate(45)'''"
+           xlink:href="test08.png"/> <polygon points="823.3620667976083,237.50000000000003,823.3620667976083,712.5,412.00000000000006,950.0,0.6379332023915936,712.5,0.6379332023915367,237.50000000000014,411.9999999999999,0.0," style="stroke:#f00;stroke-width:0.01;fill:none;"/> </g> 
+</svg>
